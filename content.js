@@ -48,6 +48,9 @@ let minSlider;
 let maxSlider;
 
 window.onload = function() {
+	// let url = new URL(window.location.href);
+	// url.searchParams.append("tradeable", );
+
 	let searchButton = document.createElement("button");
 	searchButton.textContent = "pReSs Me fOr $$$";
 	searchButton.onclick = doSearch;
@@ -97,6 +100,7 @@ async function doSearch() {
 	let item = thisURL.searchParams.get("item");
 	let quality = thisURL.searchParams.get("quality");
 	let number = thisURL.searchParams.get("low");
+	let numberHigh = thisURL.searchParams.get("high");
 	log(`Gathering info for ${item}...`);
 	let start = Date.now();
 
@@ -116,10 +120,15 @@ async function doSearch() {
 				if (thisURL.searchParams.get("numeric") == "level") {
 					url.searchParams.append("numeric", "level");
 					url.searchParams.append("low", number);
+					if (numberHigh != null) {
+						url.searchParams.append("comparison", "range");
+						url.searchParams.append("high", numberHigh);
+					}
 				}
 				url.searchParams.append("tradable", 1);
 				return url.toString();
 			})();
+			// console.log(url);
 			
 			let response = await getFile(url);
 			let doc = parser.parseFromString(response, "text/html");
@@ -140,7 +149,8 @@ async function doSearch() {
 					"spell": spell1,
 					"owner": owner,
 					"secondSpell": result.getAttribute("data-spell_2"),
-					"quality": result.getAttribute("data-quality")
+					"quality": result.getAttribute("data-quality"),
+					"level": result.getAttribute("data-level")
 				};
 				results.push(spell);
 			}
@@ -196,7 +206,7 @@ function showResults(spells, item, NUM_PAGES) {
 		let quality = QUALITIES[spellAndOwner.quality][0];
 		let colour = QUALITIES[spellAndOwner.quality][1];
 
-		page += `<span style="color:${colour}">${quality}</span> <a href=https://backpack.tf${owner} target="_blank">A dude with da spell</a>`;
+		page += `<span style="color:${colour}">${quality}</span> <a href=https://backpack.tf${owner} target="_blank">A dude with da level ${spellAndOwner.level} spell</a>`;
 		if (spellAndOwner.secondSpell) {
 			page += `<--- He has two spells o_O (second is <b>${spellAndOwner.secondSpell}</b>)<br>`;
 		} else {
