@@ -168,6 +168,15 @@ async function doSearch() {
 	showResults(results, item, NUM_PAGES);
 }
 
+function copyToClipboard(text) {
+    var dummy = document.createElement("textarea");
+    document.body.appendChild(dummy);
+    dummy.value = text;
+    dummy.select();
+    document.execCommand("copy");
+    document.body.removeChild(dummy);
+}
+
 function showResults(spells, item, NUM_PAGES) {
 	log("Generating HTML");
 	let start = Date.now();
@@ -177,9 +186,11 @@ function showResults(spells, item, NUM_PAGES) {
 	let page = `<!DOCTYPE html>
 	<html>
 		<head><title>Info for ${item}</title></head>
+		<script>${copyToClipboard.toString()}</script>
 		<body>
 			<p>Found ${spells.length} spells for ${item} out of ${NUM_PAGES * 15} items
-			${spells.length / (NUM_PAGES * 15) * 100}% had spells</p>`;
+			${spells.length / (NUM_PAGES * 15) * 100}% had spells</p>
+			<button onclick=copyToClipboard(document.documentElement.innerHTML)>Click to copy this page's HTML to clipboard</button>`;
 
 	let lastSpell = "";
 	for (let spellAndOwner of spells) {
