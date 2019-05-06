@@ -190,17 +190,19 @@ function showResults(spells, item, NUM_PAGES) {
 		<body>
 			<p>Found ${spells.length} spells for ${item} out of ${NUM_PAGES * 15} items
 			${spells.length / (NUM_PAGES * 15) * 100}% had spells</p>
-			<button onclick=copyToClipboard(document.documentElement.innerHTML)>Click to copy this page's HTML to clipboard</button>`;
+			<button onclick=copyToClipboard(document.documentElement.outerHTML)>Click to copy this page's HTML to clipboard</button><div>`;
 
 	let lastSpell = "";
 	for (let spellAndOwner of spells) {
 		let spell = spellAndOwner.spell;
 		let owner = spellAndOwner.owner;
 
+		page += "<div>";
+
 		if (spell != lastSpell) {
 			lastSpell = spell;
 			
-			page += `<h1><b>${spell}</b></h1>`;
+			page += `</div><div><h1><b>${spell}</b></h1>`;
 		}
 
 		// DO
@@ -219,10 +221,12 @@ function showResults(spells, item, NUM_PAGES) {
 
 		page += `<span style="color:${colour}">${quality}</span> <a href=https://backpack.tf${owner} target="_blank">A dude with da level ${spellAndOwner.level} spell</a>`;
 		if (spellAndOwner.secondSpell) {
-			page += `<--- He has two spells o_O (second is <b>${spellAndOwner.secondSpell}</b>)<br>`;
+			page += `<p style="display:inline"><--- He has two spells o_O (second is <b>${spellAndOwner.secondSpell}</b>)</p><br>`;
 		} else {
 			page += "<br>";
 		}
+
+		page += "</div>";
 	}
 
 	page += `</body>

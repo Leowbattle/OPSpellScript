@@ -1,0 +1,1 @@
+/usr/bin/env python3 $(dirname $0)/concatenate.py
